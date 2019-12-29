@@ -1,26 +1,26 @@
 CREATE TABLE IF NOT EXISTS Sedes (
-	id_sede VARCHAR(5) PRIMARY KEY,
+	id SERIAL PRIMARY KEY,
 	descripcion VARCHAR(25) NOT NULL,
 	direccion VARCHAR(50) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS Direcciones_x_Ciudades(
+CREATE TABLE IF NOT EXISTS Direcciones_x_Ciudad(
 	direccion VARCHAR(50) PRIMARY KEY,
 	ciudad VARCHAR(15) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS Unidades(
-	id_unidad VARCHAR(5) PRIMARY KEY,
+	id SERIAL PRIMARY KEY,
 	nombre VARCHAR(20) NOT NULL,
-	id_jefe VARCHAR(5) UNIQUE,
-	id_sede VARCHAR(5) NOT NULL
+	id_jefe INT UNIQUE,
+	id_sede INT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS Empleados(
-	ficha VARCHAR(5) PRIMARY KEY,
+	ficha SERIAL PRIMARY KEY,
 	nombre VARCHAR(35) NOT NULL,
-	cedula INT NOT NULL,
-	id_unidad VARCHAR(5) NOT NULL	
+	cedula INT NOT NULL UNIQUE,
+	id_unidad INT NOT NULL	
 );
 
 CREATE TABLE IF NOT EXISTS Tipos_de_Bien(
@@ -28,43 +28,43 @@ CREATE TABLE IF NOT EXISTS Tipos_de_Bien(
 );
 
 CREATE TABLE IF NOT EXISTS Bienes(
-	id_bien VARCHAR(5) PRIMARY KEY,
+	id SERIAL PRIMARY KEY,
 	descripcion VARCHAR(25) NOT NULL,
 	status VARCHAR(25) NOT NULL,
 	fecha_a DATE NOT NULL,
 	fecha_d DATE,
 	origen VARCHAR(10) NOT NULL,
 	tipo VARCHAR(10) NOT NULL,
-	id_resp_uso VARCHAR(5) NOT NULL,
+	id_resp_uso INT NOT NULL,
 
 	CONSTRAINT CHK_fecha_d CHECK(fecha_d >= fecha_a),
 	CONSTRAINT CHK_origen CHECK(origen IN ('Compra','Donacion','Prestamo'))
 );
 
 CREATE TABLE IF NOT EXISTS Resp_Uso_x_Unidades(
-	id_resp_uso VARCHAR(5) PRIMARY KEY,
-	id_unidad VARCHAR(5) NOT NULL
+	id_resp_uso INT PRIMARY KEY,
+	id_unidad INT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS Transferibles(
-	id_transferible VARCHAR(5) PRIMARY KEY
+	id INT PRIMARY KEY
 );
 
 CREATE TABLE IF NOT EXISTS Intransferibles(
-	id_intransferible VARCHAR(5) PRIMARY KEY
+	id INT PRIMARY KEY
 );
 
 CREATE TABLE IF NOT EXISTS Intangibles(
-	id_trans_intg VARCHAR(5) PRIMARY KEY,
+	id INT PRIMARY KEY,
 	fecha_cad DATE NOT NULL,
-	compartida BIT NOT NULL,
+	compartida BOOLEAN NOT NULL,
 	status VARCHAR(30) NOT NULL,
 
 	CONSTRAINT CHK_status CHECK(status IN('En proceso de registro','Vigente','Vencido','Desincorporado'))
 );
 
 CREATE TABLE IF NOT EXISTS Inmuebles(
-	id_inst_in VARCHAR(5) PRIMARY KEY,
+	id INT PRIMARY KEY,
 	ubicacion VARCHAR(15) NOT NULL,
 	superficie FLOAT NOT NULL,
 	status VARCHAR(30) NOT NULL,
@@ -75,40 +75,40 @@ CREATE TABLE IF NOT EXISTS Inmuebles(
 );
 
 CREATE TABLE IF NOT EXISTS Componentes(
-	id_tangible VARCHAR(5),
-	id_componente VARCHAR(5),
+	id_bien INT,
+	id_componente SERIAL,
 	nombre VARCHAR(15) NOT NULL,
 
-	PRIMARY KEY(id_Tangible,id_componente)
+	PRIMARY KEY(id_bien, id_componente)
 );
 
 CREATE TABLE IF NOT EXISTS Tangibles(
-	id_trans_tan VARCHAR(5) PRIMARY KEY,
+	id INT PRIMARY KEY,
 	status VARCHAR(30) NOT NULL,
 	num_fact INT NOT NULL,
 	precio FLOAT NOT NULL,
 	garantia VARCHAR(15),
 
-	CONSTRAINT CHECK_status CHECK(status IN ('En proceso de registro','Activo','Dañado','Obsoleto','En reparacion','Desincorporado'))
+	CONSTRAINT CHK_status CHECK(status IN ('En proceso de registro','Activo','Dañado','Obsoleto','En reparacion','Desincorporado'))
 );
 
-CREATE TABLE IF NOT EXISTS Se_transfieren(
+CREATE TABLE IF NOT EXISTS Bienes_Transferidos(
 	nro_mov INT NOT NULL,
-	id_bien_trans VARCHAR(5) NOT NULL,
+	id_bien INT NOT NULL,
 
 	PRIMARY KEY(nro_mov,id_bien_trans)
 );
 
 CREATE TABLE IF NOT EXISTS Movilizaciones(
-	nro_mov INT PRIMARY KEY,
+	nro_mov SERIAL PRIMARY KEY,
 	fecha DATE NOT NULL,
 	motivo VARCHAR(30),
-	A_RP_REC BIT NOT NULL,
-	A_RP_CED BIT NOT NULL,
-	ficha_RU_REC VARCHAR(5) NOT NULL,
-	ficha_RU_CED VARCHAR(5) NOT NULL,
-	id_unidad_REC VARCHAR(5) NOT NULL,
-	id_unidad_CED VARCHAR(5) NOT NULL,
+	A_RP_REC BOOLEAN NOT NULL,
+	A_RP_CED BOOLEAN NOT NULL,
+	ficha_RU_REC INT NOT NULL,
+	ficha_RU_CED INT NOT NULL,
+	id_unidad_REC INT NOT NULL,
+	id_unidad_CED INT NOT NULL,
 
 	CONSTRAINT CHK_id_ced CHECK(id_unidad_CED <> id_unidad_REC )
 );
@@ -120,7 +120,7 @@ CREATE TABLE IF NOT EXISTS Inventarios(
 	fecha_i DATE NOT NULL,
 	fecha_f DATE,
 	status VARCHAR(15) NOT NULL,
-	id_emp_enc VARCHAR(5) NOT NULL,
+	id_emp_enc INT NOT NULL,
 
 	PRIMARY KEY(año,semestre,tipo_bien),
 
@@ -128,8 +128,8 @@ CREATE TABLE IF NOT EXISTS Inventarios(
 	CONSTRAINT CHK_status CHECK (status IN ('En ejercucion','En Conciliacion','Cerrado'))
 );
 
-CREATE TABLE IF NOT EXISTS Participan_Emp_Inv(
-	id_emp VARCHAR(5),
+CREATE TABLE IF NOT EXISTS Empleados_x_Inventario(
+	id_emp INT,
 	año INT,
 	semestre VARCHAR(20),
 	tipo_bien VARCHAR(10),
@@ -137,92 +137,92 @@ CREATE TABLE IF NOT EXISTS Participan_Emp_Inv(
 	PRIMARY KEY(id_emp,año,semestre,tipo_bien)
 );
 
-
 CREATE TABLE IF NOT EXISTS Registros(
-	id_bien VARCHAR(5),
-	id_emp VARCHAR(5),
+	id_bien INT,
+	id_emp INT,
 	detalle VARCHAR(50) NOT NULL,
-	existe BIT NOT NULL,
+	existe BOOLEAN NOT NULL,
 
 	PRIMARY KEY(id_bien,id_emp)
 );
 
-CREATE TABLE IF NOT EXISTS Posee_Cuerpo(
+/*esta es la relacion Posee*/
+CREATE TABLE IF NOT EXISTS Registros_x_Inventario(
 	año INT,
 	semestre VARCHAR(20),
 	tipo_bien VARCHAR(10),
-	id_bien VARCHAR(5),
-	id_emp VARCHAR(5),
+	id_bien INT,
+	id_emp INT,
 
 	PRIMARY KEY(año,semestre,tipo_bien,id_bien,id_emp)
 );
 
 CREATE TABLE IF NOT EXISTS Hist_Responsables(
-	id_emp VARCHAR(5),
-	id_bien varchar(5),
+	id_emp INT,
+	id_bien INT,
 	fecha DATE NOT NULL,
 
 	PRIMARY KEY(id_emp,id_bien)
 );
 
 CREATE TABLE IF NOT EXISTS Hist_Jefes(
-	id_unidad VARCHAR(5),
-	id_emp varchar(5),
+	id_unidad INT,
+	id_emp INT,
 	fecha DATE NOT NULL,
 
 	PRIMARY KEY(id_emp,id_unidad)
 );
 
-
 CREATE TABLE IF NOT EXISTS Empleados_Enc(
-	id_emp_enc VARCHAR(5) PRIMARY KEY,
-	id_sede VARCHAR(5) NOT NULL
+	id_emp_enc INT PRIMARY KEY,
+	id_sede INT NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS Comp_x_Tangibles(
-	id_tangible VARCHAR(5),
+/*esta es la relacion tiene entre comp y tang*/
+CREATE TABLE IF NOT EXISTS Componentes_x_Bien(
+	id_bien INT,
 	id_componente VARCHAR (5),
 
-	PRIMARY KEY(id_tangible,id_componente)
+	PRIMARY KEY(id_bien,id_componente)
 );
 
-CREATE TABLE IF NOT EXISTS Es_parte_de(
-	id_bien_contenedor VARCHAR(5),
-	id_comp_contenedor VARCHAR(5),
-	id_bien_contenido VARCHAR(5),
-	id_comp_contenido VARCHAR(5),
+/*relacion recursiva de componente*/
+CREATE TABLE IF NOT EXISTS Componentes_x_Componente(
+	id_bien_contenedor INT,
+	id_comp_contenedor INT,
+	id_bien_contenido INT,
+	id_comp_contenido INT,
 
 	PRIMARY KEY(id_bien_contenedor,id_comp_contenedor,id_bien_contenido,id_comp_contenido)
 
 );
 
 CREATE TABLE IF NOT EXISTS Facturas(
-	id_trans_tan VARCHAR(5) PRIMARY KEY,
+	num_fact INT PRIMARY KEY,
 	num_orden INT NOT NULL,
 	proveedor VARCHAR(20) NOT NULL
 
 );
 
-CREATE TABLE IF NO EXISTS Naturales(
-	id_inst_nat VARCHAR(5) PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS Naturales(
+	id INT PRIMARY KEY,
 	status VARCHAR(25) NOT NULL,
-	nombre_c VARCHAR(15) NOT NULL,
+	nombre_c VARCHAR(15) NOT NULL UNIQUE,
 	fecha_p DATE NOT NULL,
 	origen VARCHAR(15) NOT NULL,
 	ubicacion VARCHAR(20) NOT NULL,
-	--la foto te la debo xd
+	foto bytea 
 
-	CONSTRAINT CHK_status CHECK (status IN ('En proceso de registro','plantado','enfermo','extinto'))
+	CONSTRAINT CHK_status CHECK (status IN ('en proceso de registro','plantado','enfermo','extinto'))
 		
 );
 
-CREATE TABLE IF NO EXISTS Nombres_Cientificos(
+CREATE TABLE IF NOT EXISTS Info_Arboles(
 	nombre_c VARCHAR(20) PRIMARY KEY,
 	nombre_V VARCHAR(20) NOT NULL,
-	frutal BIT NOT NULL,
+	frutal BOOLEAN NOT NULL,
 	floracion VARCHAR(15) NOT NULL
 );
 
 CREATE INDEX Idx_unidades_id_jefe ON Unidades(id_jefe);
 CREATE INDEX Idx_empleados_Cedula ON Empleados(cedula);
-
