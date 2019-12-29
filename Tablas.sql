@@ -4,3 +4,5 @@ CREATE TABLE IF NOT EXISTS mipene
     CONSTRAINT nomeacuerdodesqlxd;
 
 pero bueno tu eres marico juan
+
+un poquito xd
