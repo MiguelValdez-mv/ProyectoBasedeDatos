@@ -28,14 +28,14 @@ CREATE TABLE IF NOT EXISTS Tipos_de_Bien(
 );
 
 CREATE TABLE IF NOT EXISTS Bienes(
-	id SERIAL PRIMARY KEY,
+	id INT PRIMARY KEY,
 	descripcion VARCHAR(25) NOT NULL,
 	status VARCHAR(25) NOT NULL,
 	fecha_a DATE NOT NULL,
 	fecha_d DATE,
 	origen VARCHAR(10) NOT NULL,
 	tipo VARCHAR(10) NOT NULL,
-	id_resp_uso INT NOT NULL,
+	id_resp_uso INT, /*cambie esto a que pueda ser nulo porque un bien puede no tener responsable aun*/
 
 	CONSTRAINT CHK_fecha_d CHECK(fecha_d >= fecha_a),
 	CONSTRAINT CHK_origen CHECK(origen IN ('Compra','Donacion','Prestamo'))

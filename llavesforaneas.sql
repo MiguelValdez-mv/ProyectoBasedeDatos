@@ -1,13 +1,14 @@
-﻿
-ALTER TABLE Direcciones_x_Ciudad ADD CONSTRAINT FK_direccion FOREIGN KEY (direccion) REFERENCES Sedes(direccion);
+﻿/*el predeterminado es NO ACTION, que es basicamente lo mismo que RESTRICT porq lanza error si se trata de modificar el papi*/
 
-ALTER TABLE  Unidades ADD CONSTRAINT FK_id_sede FOREIGN KEY (id_sede) REFERENCES Sedes(id);
-ALTER TABLE Unidades ADD CONSTRAINT FK_id_jefe FOREIGN KEY (id_jefe) REFERENCES Empleados(ficha);
+ALTER TABLE Direcciones_x_Ciudad ADD CONSTRAINT FK_direccion FOREIGN KEY (direccion) REFERENCES Sedes(direccion) ON UPDATE CASCADE ON DELETE CASCADE;
 
-ALTER TABLE Empleados ADD CONSTRAINT FK_id_unidad FOREIGN KEY (id_unidad) REFERENCES Unidades(id);
+ALTER TABLE  Unidades ADD CONSTRAINT FK_id_sede FOREIGN KEY (id_sede) REFERENCES Sedes(id) ON UPDATE CASCADE ON DELETE CASCADE; /*cuidaito aqui xd*/
+ALTER TABLE Unidades ADD CONSTRAINT FK_id_jefe FOREIGN KEY (id_jefe) REFERENCES Empleados(ficha) ON UPDATE CASCADE ON DELETE SET NULL;
 
-ALTER TABLE Bienes ADD CONSTRAINT FK_id_resp_uso FOREIGN KEY (id_resp_uso) REFERENCES Empleados(ficha);
-ALTER TABLE  Bienes ADD CONSTRAINT FK_tipo FOREIGN KEY (tipo) REFERENCES Tipos_de_Bien(tipo_de_bien);
+ALTER TABLE Empleados ADD CONSTRAINT FK_id_unidad FOREIGN KEY (id_unidad) REFERENCES Unidades(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+ALTER TABLE Bienes ADD CONSTRAINT FK_id_resp_uso FOREIGN KEY (id_resp_uso) REFERENCES Empleados(ficha) ON UPDATE CASCADE ON DELETE SET NULL; /*revisar*/
+ALTER TABLE  Bienes ADD CONSTRAINT FK_tipo FOREIGN KEY (tipo) REFERENCES Tipos_de_Bien(tipo_de_bien) ON UPDATE CASCADE ON DELETE RESTRICT;
 
 ALTER TABLE Resp_Uso_x_Unidades ADD CONSTRAINT FK_id_resp_uso FOREIGN KEY (id_resp_uso) REFERENCES Empleados(ficha);
 ALTER TABLE Resp_Uso_x_Unidades ADD CONSTRAINT FK_id_unidad FOREIGN KEY (id_unidad) REFERENCES Unidades(id);
