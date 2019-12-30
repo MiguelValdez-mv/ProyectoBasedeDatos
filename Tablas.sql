@@ -1,7 +1,7 @@
-CREATE TABLE IF NOT EXISTS Sedes (
+﻿CREATE TABLE IF NOT EXISTS Sedes (
 	id SERIAL PRIMARY KEY,
 	descripcion VARCHAR(25) NOT NULL,
-	direccion VARCHAR(50) NOT NULL
+	direccion VARCHAR(50) NOT NULL UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS Direcciones_x_Ciudad(
@@ -96,7 +96,7 @@ CREATE TABLE IF NOT EXISTS Bienes_Transferidos(
 	nro_mov INT NOT NULL,
 	id_bien INT NOT NULL,
 
-	PRIMARY KEY(nro_mov,id_bien_trans)
+	PRIMARY KEY(nro_mov,id_bien)
 );
 
 CREATE TABLE IF NOT EXISTS Movilizaciones(
@@ -174,14 +174,14 @@ CREATE TABLE IF NOT EXISTS Hist_Jefes(
 );
 
 CREATE TABLE IF NOT EXISTS Empleados_Enc(
-	id_emp_enc INT PRIMARY KEY,
+	id_emp INT PRIMARY KEY,
 	id_sede INT NOT NULL
 );
 
 /*esta es la relacion tiene entre comp y tang*/
 CREATE TABLE IF NOT EXISTS Componentes_x_Bien(
 	id_bien INT,
-	id_componente VARCHAR (5),
+	id_componente INT,
 
 	PRIMARY KEY(id_bien,id_componente)
 );
@@ -224,5 +224,7 @@ CREATE TABLE IF NOT EXISTS Info_Arboles(
 	floracion VARCHAR(15) NOT NULL
 );
 
+
+/*-- Indices --*/
 CREATE INDEX Idx_unidades_id_jefe ON Unidades(id_jefe);
 CREATE INDEX Idx_empleados_Cedula ON Empleados(cedula);
