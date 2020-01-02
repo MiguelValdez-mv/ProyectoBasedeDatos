@@ -158,7 +158,6 @@ CREATE TABLE IF NOT EXISTS Registros_x_Inventario(
 	
 	id_bien INT,
 	id_emp INT,
-
 	PRIMARY KEY(año,semestre,tipo_bien,id_bien,id_emp)
 );*/
 
@@ -178,18 +177,20 @@ CREATE TABLE IF NOT EXISTS Hist_Jefes(
 	PRIMARY KEY(id_emp,id_unidad)
 );
 
+/*
 CREATE TABLE IF NOT EXISTS Empleados_Enc(
 	id_emp INT PRIMARY KEY,
 	id_sede INT NOT NULL
-);
+); */
 
-/*esta es la relacion tiene entre comp y tang*/
-CREATE TABLE IF NOT EXISTS Componentes_x_Bien(
+/*esta es la relacion tiene entre comp y tang */
+/* CREATE TABLE IF NOT EXISTS Componentes_x_Bien(
 	id_bien INT,
 	id_componente INT,
 
 	PRIMARY KEY(id_bien,id_componente)
 );
+*/
 
 /*relacion recursiva de componente*/
 CREATE TABLE IF NOT EXISTS Componentes_x_Componente(
