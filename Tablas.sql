@@ -35,16 +35,17 @@ CREATE TABLE IF NOT EXISTS Bienes(
 	fecha_d DATE,
 	origen VARCHAR(10) NOT NULL,
 	tipo VARCHAR(10) NOT NULL,
-	id_resp_uso INT, /*cambie esto a que pueda ser nulo porque un bien puede no tener responsable aun*/
+	id_resp_uso INT, 
+	id_unidad INT NOT NULL,
 
 	CONSTRAINT CHK_fecha_d CHECK(fecha_d >= fecha_a),
 	CONSTRAINT CHK_origen CHECK(origen IN ('Compra','Donacion','Prestamo'))
 );
 
-CREATE TABLE IF NOT EXISTS Resp_Uso_x_Unidades(
+/*CREATE TABLE IF NOT EXISTS Resp_Uso_x_Unidades(
 	id_resp_uso INT PRIMARY KEY,
 	id_unidad INT NOT NULL
-);
+); la dejo comentada por si nos arrepentimos xd*/ 
 
 CREATE TABLE IF NOT EXISTS Transferibles(
 	id INT PRIMARY KEY
@@ -65,7 +66,7 @@ CREATE TABLE IF NOT EXISTS Intangibles(
 
 CREATE TABLE IF NOT EXISTS Inmuebles(
 	id INT PRIMARY KEY,
-	ubicacion VARCHAR(15) NOT NULL,
+	ubicacion VARCHAR(20) NOT NULL,
 	superficie FLOAT NOT NULL,
 	status VARCHAR(30) NOT NULL,
 	tipo VARCHAR(10) NOT NULL,
@@ -85,8 +86,8 @@ CREATE TABLE IF NOT EXISTS Componentes(
 CREATE TABLE IF NOT EXISTS Tangibles(
 	id INT PRIMARY KEY,
 	status VARCHAR(30) NOT NULL,
-	num_fact INT NOT NULL,
-	precio FLOAT NOT NULL,
+	num_fact INT,
+	precio FLOAT,
 	garantia VARCHAR(15),
 
 	CONSTRAINT CHK_status CHECK(status IN ('En proceso de registro','Activo','Dañado','Obsoleto','En reparacion','Desincorporado'))
@@ -114,15 +115,16 @@ CREATE TABLE IF NOT EXISTS Movilizaciones(
 );
 
 CREATE TABLE IF NOT EXISTS Inventarios(
+	id_sede INT,
 	año INT,
 	semestre VARCHAR(20),
 	tipo_bien VARCHAR(10),
 	fecha_i DATE NOT NULL,
 	fecha_f DATE,
-	status VARCHAR(15) NOT NULL,
+	status VARCHAR(20) NOT NULL,
 	id_emp_enc INT NOT NULL,
-
-	PRIMARY KEY(año,semestre,tipo_bien),
+	
+	PRIMARY KEY(id_sede, año, semestre, tipo_bien),
 
 	CONSTRAINT CHK_fechas CHECK (fecha_f >= fecha_i),
 	CONSTRAINT CHK_status CHECK (status IN ('En ejercucion','En Conciliacion','Cerrado'))
@@ -130,32 +132,35 @@ CREATE TABLE IF NOT EXISTS Inventarios(
 
 CREATE TABLE IF NOT EXISTS Empleados_x_Inventario(
 	id_emp INT,
+	id_sede INT,
 	año INT,
-	semestre VARCHAR(20),
+	semestre VARCHAR(10),
 	tipo_bien VARCHAR(10),
 
-	PRIMARY KEY(id_emp,año,semestre,tipo_bien)
+	PRIMARY KEY(id_emp, id_sede, año,semestre,tipo_bien)
 );
 
 CREATE TABLE IF NOT EXISTS Registros(
 	id_bien INT,
+	id_sede INT,
+	año INT,
+	semestre VARCHAR(10),
+	tipo_bien VARCHAR(10),
 	id_emp INT,
 	detalle VARCHAR(50) NOT NULL,
 	existe BOOLEAN NOT NULL,
 
-	PRIMARY KEY(id_bien,id_emp)
+	PRIMARY KEY(id_bien, id_sede, año, semestre, tipo_bien)
 );
 
-/*esta es la relacion Posee*/
+/*
 CREATE TABLE IF NOT EXISTS Registros_x_Inventario(
-	año INT,
-	semestre VARCHAR(20),
-	tipo_bien VARCHAR(10),
+	
 	id_bien INT,
 	id_emp INT,
 
 	PRIMARY KEY(año,semestre,tipo_bien,id_bien,id_emp)
-);
+);*/
 
 CREATE TABLE IF NOT EXISTS Hist_Responsables(
 	id_emp INT,
@@ -206,10 +211,10 @@ CREATE TABLE IF NOT EXISTS Facturas(
 
 CREATE TABLE IF NOT EXISTS Naturales(
 	id INT PRIMARY KEY,
-	status VARCHAR(25) NOT NULL,
-	nombre_c VARCHAR(15) NOT NULL UNIQUE,
+	status VARCHAR(30) NOT NULL,
+	nombre_c VARCHAR(25) NOT NULL UNIQUE,
 	fecha_p DATE NOT NULL,
-	origen VARCHAR(15) NOT NULL,
+	origen VARCHAR(15),
 	ubicacion VARCHAR(20) NOT NULL,
 	foto bytea 
 
