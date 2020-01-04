@@ -1,13 +1,14 @@
 ﻿CREATE TABLE IF NOT EXISTS Sedes (
 	id SERIAL PRIMARY KEY,
 	descripcion VARCHAR(25) NOT NULL,
-	direccion VARCHAR(50) NOT NULL UNIQUE
-);
-
-CREATE TABLE IF NOT EXISTS Direcciones_x_Ciudad(
-	direccion VARCHAR(50) PRIMARY KEY,
+	direccion VARCHAR(50) NOT NULL UNIQUE,
 	ciudad VARCHAR(15) NOT NULL
 );
+
+/*CREATE TABLE IF NOT EXISTS Direcciones_x_Ciudad(
+	direccion VARCHAR(50) PRIMARY KEY,
+	ciudad VARCHAR(15) NOT NULL
+);*/
 
 CREATE TABLE IF NOT EXISTS Unidades(
 	id SERIAL PRIMARY KEY,
@@ -20,7 +21,9 @@ CREATE TABLE IF NOT EXISTS Empleados(
 	ficha SERIAL PRIMARY KEY,
 	nombre VARCHAR(35) NOT NULL,
 	cedula INT NOT NULL UNIQUE,
-	id_unidad INT NOT NULL	
+	id_unidad INT NOT NULL,
+
+	CONSTRAINT CHK_cedula CHECK(cedula > 0)	
 );
 
 CREATE TABLE IF NOT EXISTS Tipos_de_Bien(
@@ -127,7 +130,7 @@ CREATE TABLE IF NOT EXISTS Inventarios(
 	PRIMARY KEY(id_sede, año, semestre, tipo_bien),
 
 	CONSTRAINT CHK_fechas CHECK (fecha_f >= fecha_i),
-	CONSTRAINT CHK_status CHECK (status IN ('En ejercucion','En Conciliacion','Cerrado'))
+	CONSTRAINT CHK_status CHECK (status IN ('En ejecucion','En Conciliacion','Cerrado'))
 );
 
 CREATE TABLE IF NOT EXISTS Empleados_x_Inventario(
@@ -219,7 +222,7 @@ CREATE TABLE IF NOT EXISTS Naturales(
 	ubicacion VARCHAR(20) NOT NULL,
 	foto bytea 
 
-	CONSTRAINT CHK_status CHECK (status IN ('en proceso de registro','plantado','enfermo','extinto'))
+	CONSTRAINT CHK_status CHECK (status IN ('En proceso de registro','Plantado','Enfermo','Extinto'))
 		
 );
 
